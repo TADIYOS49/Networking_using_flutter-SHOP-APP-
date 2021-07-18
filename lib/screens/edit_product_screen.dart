@@ -101,19 +101,21 @@ class _EditProductScreenState extends State<EditProductScreen> {
             .addProduct(_editedProduct);
       } catch (error) {
         await showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-                  title: Text('An error occured!'),
-                  content: Text('Something went wrong.'),
-                  actions: [
-                    FlatButton(
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                        },
-                        child: Text('Okay'))
-                  ],
-                ));
-      } 
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('An error occurred!'),
+                content: Text('Something went wrong.'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Okay'),
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                  )
+                ],
+              ),
+        );
+      }
       // finally {
       //   setState(() {
       //     _isLoading = false;
@@ -121,10 +123,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
       //   Navigator.of(context).pop();
       // }
     }
-     setState(() {
-        _isLoading = false;
-      });
-      Navigator.of(context).pop();
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.of(context).pop();
+    // Navigator.of(context).pop();
   }
 
   @override
