@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/http_exception.dart';
@@ -23,25 +23,38 @@ class Auth with ChangeNotifier {
     return null;
   }
 
+  String get userId {
+    return _userId;
+  }
+
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {
     final url = Uri.parse(
-        'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyCe0BneUTEZ9LnySWKz4sPE4i2A5o1X_68');
+        'https://www.googleapis.com/identitytoolkit/v3/relyingparty/$urlSegment?key=AIzaSyC13spCwP_f_SalxEbkB-wjedoF8iYENlQ');
     try {
-      final response = await http.post(url,
-          body: json.encode({
+      final response = await http.post(
+        url,
+        body: json.encode(
+          {
             'email': email,
             'password': password,
-            'returnSecureToken': true
-          }));
-      final responsedata = json.decode(response.body);
-      if (responsedata['error'] != null) {
-        throw HttpException(responsedata['error']['message']);
+            'returnSecureToken': true,
+          },
+        ),
+      );
+      final responseData = json.decode(response.body);
+      if (responseData['error'] != null) {
+        throw HttpException(responseData['error']['message']);
       }
-      _token = responsedata['idToken'];
-      _userId = responsedata['localId'];
-      _expiryDate = DateTime.now()
-          .add(Duration(seconds: int.parse(responsedata['expiresIn'])));
+      _token = responseData['idToken'];
+      _userId = responseData['localId'];
+      _expiryDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(
+            responseData['expiresIn'],
+          ),
+        ),
+      );
       notifyListeners();
     } catch (error) {
       throw error;
@@ -49,12 +62,10 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> signup(String email, String password) async {
-    print('signup is called');
-    return _authenticate(email, password, 'signUp');
+    return _authenticate(email, password, 'signupNewUser');
   }
 
   Future<void> login(String email, String password) async {
-    print('login is called');
-    return _authenticate(email, password, 'signInWithPassword');
+    return _authenticate(email, password, 'verifyPassword');
   }
 }
